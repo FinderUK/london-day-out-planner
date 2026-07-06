@@ -144,6 +144,13 @@
     flex-wrap:wrap; text-align:center;
   }
   .sticky-bar .big{font-size:1.35rem; font-weight:800;}
+  #resetBtn{
+    border:2px solid rgba(255,255,255,.35); background:transparent; color:#fff;
+    font:inherit; font-weight:700; font-size:.9rem; padding:8px 14px; border-radius:12px;
+    cursor:pointer; white-space:nowrap;
+  }
+  #resetBtn:hover{background:rgba(255,255,255,.12);}
+  #resetBtn:active{transform:scale(.96);}
   .sticky-bar .big.ok{color:#7cf5ae;} .sticky-bar .big.warn{color:#ffd166;} .sticky-bar .big.over{color:#ff8fa5;}
   .footnote{margin-top:26px; font-size:.78rem; color:var(--muted); text-align:center; line-height:1.5;}
   @media (max-width:560px){
@@ -286,6 +293,7 @@
   <span>💰 Left to spend:</span>
   <span class="big ok" id="stickyRemaining">£200.00</span>
   <span id="stickyHint"></span>
+  <button id="resetBtn" title="Clear everything and start again">🔄 Start over</button>
 </div>
 
 <script>
@@ -430,18 +438,21 @@ const DATA = {
 /* =====================================================================
    STATE
    ===================================================================== */
-const state = {
-  budget: 200,
-  family: Object.fromEntries(DATA.categories.map(c => [c.key, c.default])),
-  travelMode: "train",              // train | car | coach | local
-  origin: 1, parking: 1,            // origin = index into DATA.locations (1 = Reading)
-  railcard: false, seniorRailcard: false,
-  congestion: true, ulez: false,
-  tube: false, bus: false,
-  activities: [],                   // indices into DATA.activities
-  food: [],                         // indices into DATA.food
-  extras: [],                       // indices into DATA.extras
-};
+function defaults(){
+  return {
+    budget: 200,
+    family: Object.fromEntries(DATA.categories.map(c => [c.key, c.default])),
+    travelMode: "train",              // train | car | coach | local
+    origin: 1, parking: 1,            // origin = index into DATA.locations (1 = Reading)
+    railcard: false, seniorRailcard: false,
+    congestion: true, ulez: false,
+    tube: false, bus: false,
+    activities: [],                   // indices into DATA.activities
+    food: [],                         // indices into DATA.food
+    extras: [],                       // indices into DATA.extras
+  };
+}
+const state = defaults();
 
 const gbp = n => (n<0?"-£":"£") + Math.abs(n).toFixed(2);
 const el = id => document.getElementById(id);
@@ -689,7 +700,18 @@ function render(){
 /* =====================================================================
    EVENTS
    ===================================================================== */
+function resetAll(){
+  if(!confirm("Start over? This clears your budget, family and everything you've picked.")) return;
+  Object.assign(state, defaults());
+  try{ localStorage.removeItem("londonPlanner"); }catch(e){}
+  el("budget").value = state.budget;
+  buildFamily();
+  initFromState();
+  render();
+}
+
 function wire(){
+  el("resetBtn").addEventListener("click", resetAll);
   el("budget").addEventListener("input", e=>{ state.budget = Math.max(0, +e.target.value||0); render(); });
 
   el("famGrid").addEventListener("click", e=>{
