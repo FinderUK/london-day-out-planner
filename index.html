@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>London Day Out Planner 🎡</title>
+<style>
+  :root{
+    --bg:#f4f6fb; --card:#ffffff; --ink:#1d2340; --muted:#6b7395;
+    --red:#e63956; --green:#12a150; --amber:#e8930c;
+    --blue:#2f6df6; --purple:#7c4dff; --pink:#ff4d8d; --teal:#00a6a6;
+    --radius:18px; --shadow:0 4px 14px rgba(29,35,64,.08);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:"Avenir Next","Segoe UI",system-ui,-apple-system,sans-serif;
+    background:var(--bg); color:var(--ink); padding-bottom:120px;
+  }
+  header.hero{
+    background:linear-gradient(135deg,#2f6df6 0%,#7c4dff 55%,#ff4d8d 100%);
+    color:#fff; padding:26px 20px 68px; text-align:center;
+  }
+  header.hero h1{font-size:clamp(1.5rem,4vw,2.3rem); letter-spacing:.5px;}
+  header.hero p{opacity:.9; margin-top:6px; font-size:.98rem;}
+  .wrap{max-width:980px; margin:0 auto; padding:0 16px;}
+
+  /* Budget panel */
+  .budget-panel{
+    background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow);
+    margin-top:-46px; padding:18px 20px; position:relative;
+  }
+  .budget-row{display:flex; flex-wrap:wrap; gap:18px; align-items:center; justify-content:space-between;}
+  .budget-input label{font-weight:700; font-size:.85rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em;}
+  .budget-input .money{display:flex; align-items:center; gap:4px; font-size:1.9rem; font-weight:800;}
+  .budget-input input{
+    font-size:1.9rem; font-weight:800; width:150px; border:none; border-bottom:3px dashed #cdd4ea;
+    color:var(--ink); background:transparent; outline:none;
+  }
+  .budget-input input:focus{border-bottom-color:var(--blue);}
+  .budget-stats{display:flex; gap:26px; text-align:right;}
+  .stat .lbl{font-size:.78rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.06em;}
+  .stat .val{font-size:1.5rem; font-weight:800;}
+  #remainingVal.ok{color:var(--green);} #remainingVal.warn{color:var(--amber);} #remainingVal.over{color:var(--red);}
+  .bar{height:16px; background:#e8ecf7; border-radius:999px; margin-top:14px; overflow:hidden;}
+  .bar-fill{height:100%; width:0%; border-radius:999px; background:linear-gradient(90deg,#12a150,#7cc242); transition:width .35s ease, background .35s ease;}
+  .bar-fill.warn{background:linear-gradient(90deg,#e8930c,#f6b93b);}
+  .bar-fill.over{background:linear-gradient(90deg,#e63956,#ff7096);}
+  #overMsg{display:none; margin-top:10px; background:#ffe9ee; color:var(--red); font-weight:700; padding:10px 14px; border-radius:12px; font-size:.95rem;}
+  #okMsg{display:none; margin-top:10px; background:#e6f7ee; color:var(--green); font-weight:700; padding:10px 14px; border-radius:12px; font-size:.95rem;}
+
+  section.card{
+    background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow);
+    margin-top:22px; padding:20px;
+  }
+  section.card h2{font-size:1.15rem; display:flex; align-items:center; gap:10px; margin-bottom:4px;}
+  section.card h2 .cost-chip{margin-left:auto;}
+  .hint{color:var(--muted); font-size:.88rem; margin-bottom:14px;}
+  .cost-chip{
+    font-size:.95rem; font-weight:800; background:#eef2ff; color:var(--blue);
+    padding:4px 12px; border-radius:999px; white-space:nowrap;
+  }
+
+  /* family steppers */
+  .fam-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px;}
+  .fam-tile{border:2px solid #e8ecf7; border-radius:14px; padding:12px; text-align:center;}
+  .fam-tile .emoji{font-size:1.7rem;}
+  .fam-tile .name{font-weight:700; font-size:.92rem; margin-top:2px;}
+  .fam-tile .ages{font-size:.75rem; color:var(--muted);}
+  .stepper{display:flex; align-items:center; justify-content:center; gap:12px; margin-top:8px;}
+  .stepper button{
+    width:34px; height:34px; border-radius:50%; border:none; font-size:1.2rem; font-weight:800;
+    background:#eef2ff; color:var(--blue); cursor:pointer;
+  }
+  .stepper button:active{transform:scale(.92);}
+  .stepper .count{font-size:1.3rem; font-weight:800; min-width:24px;}
+
+  /* forms */
+  select,input[type=number]{
+    font:inherit; padding:10px 12px; border:2px solid #e0e5f3; border-radius:12px;
+    background:#fff; color:var(--ink); font-weight:600;
+  }
+  select:focus,input:focus{outline:none; border-color:var(--blue);}
+  .field{display:flex; flex-direction:column; gap:6px; margin:8px 0;}
+  .field>label{font-size:.82rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.05em;}
+  .inline-fields{display:flex; flex-wrap:wrap; gap:14px; align-items:flex-end;}
+  .inline-fields .field{flex:1; min-width:190px;}
+
+  /* travel mode tabs */
+  .mode-tabs{display:flex; flex-wrap:wrap; gap:10px; margin:6px 0 14px;}
+  .mode-tab{
+    border:2px solid #e0e5f3; background:#fff; border-radius:14px; padding:10px 16px;
+    font-weight:700; cursor:pointer; font-size:.95rem; color:var(--muted);
+  }
+  .mode-tab.active{border-color:var(--blue); color:var(--blue); background:#eef2ff;}
+  .travel-pane{display:none; border-top:2px dashed #e8ecf7; padding-top:14px;}
+  .travel-pane.active{display:block;}
+  .toggles{display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;}
+  .toggle{
+    display:flex; align-items:center; gap:8px; border:2px solid #e0e5f3; border-radius:12px;
+    padding:8px 12px; cursor:pointer; font-weight:600; font-size:.9rem; background:#fff;
+  }
+  .toggle input{accent-color:var(--blue); width:18px; height:18px;}
+  .toggle.on{border-color:var(--teal); background:#e9f8f8;}
+  .breakdown{margin-top:12px; font-size:.88rem; color:var(--muted); background:#f7f9fe; border-radius:12px; padding:10px 14px;}
+  .breakdown div{display:flex; justify-content:space-between; padding:2px 0;}
+  .breakdown .money-sm{font-weight:700; color:var(--ink);}
+
+  /* picker rows */
+  .picker{display:flex; flex-wrap:wrap; gap:10px; align-items:center;}
+  .picker select{flex:1; min-width:220px;}
+  .add-btn{
+    border:none; background:var(--blue); color:#fff; font-weight:800; font-size:.95rem;
+    padding:11px 20px; border-radius:12px; cursor:pointer;
+  }
+  .add-btn:active{transform:scale(.97);}
+  .add-btn.purple{background:var(--purple);} .add-btn.pink{background:var(--pink);} .add-btn.teal{background:var(--teal);}
+  .price-preview{font-size:.9rem; font-weight:700; color:var(--muted); min-width:130px;}
+
+  .chips{display:flex; flex-direction:column; gap:8px; margin-top:14px;}
+  .chip{
+    display:flex; align-items:center; gap:10px; background:#f7f9fe; border:2px solid #e8ecf7;
+    border-radius:14px; padding:10px 14px; font-weight:600; font-size:.95rem;
+  }
+  .chip .chip-price{margin-left:auto; font-weight:800; white-space:nowrap;}
+  .chip .chip-price.free{color:var(--green);}
+  .chip button{
+    border:none; background:#ffe0e8; color:var(--red); width:28px; height:28px; border-radius:50%;
+    font-weight:800; cursor:pointer; font-size:1rem; line-height:1;
+  }
+  .chip .who{font-size:.78rem; color:var(--muted); font-weight:600;}
+
+  /* summary */
+  .summary-list{margin-top:10px;}
+  .summary-line{display:flex; justify-content:space-between; padding:8px 4px; border-bottom:1px dashed #e0e5f3; font-weight:600;}
+  .summary-line:last-of-type{border-bottom:none;}
+  .summary-line .cat{display:flex; gap:8px; align-items:center;}
+  .grand{display:flex; justify-content:space-between; margin-top:10px; padding:14px; border-radius:12px; background:#eef2ff; font-size:1.15rem; font-weight:800;}
+
+  /* sticky footer bar */
+  .sticky-bar{
+    position:fixed; bottom:0; left:0; right:0; background:var(--ink); color:#fff;
+    padding:12px 18px; display:flex; align-items:center; gap:16px; justify-content:center;
+    font-weight:700; z-index:50; box-shadow:0 -4px 18px rgba(0,0,0,.2);
+    flex-wrap:wrap; text-align:center;
+  }
+  .sticky-bar .big{font-size:1.35rem; font-weight:800;}
+  .sticky-bar .big.ok{color:#7cf5ae;} .sticky-bar .big.warn{color:#ffd166;} .sticky-bar .big.over{color:#ff8fa5;}
+  .footnote{margin-top:26px; font-size:.78rem; color:var(--muted); text-align:center; line-height:1.5;}
+  @media (max-width:560px){
+    .budget-stats{width:100%; justify-content:space-between; text-align:left;}
+    .sticky-bar{gap:8px; font-size:.9rem;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1>🎡 London Day Out Planner 🇬🇧</h1>
+  <p>Plan your family's perfect day — and see if it fits your budget!</p>
+</header>
+
+<div class="wrap">
+
+  <!-- BUDGET -->
+  <div class="budget-panel">
+    <div class="budget-row">
+      <div class="budget-input">
+        <label for="budget">💰 Your budget</label>
+        <div class="money">£<input id="budget" type="number" min="0" step="5" value="200" inputmode="numeric"></div>
+      </div>
+      <div class="budget-stats">
+        <div class="stat"><div class="lbl">Spent</div><div class="val" id="spentVal">£0.00</div></div>
+        <div class="stat"><div class="lbl">Left to spend</div><div class="val ok" id="remainingVal">£200.00</div></div>
+      </div>
+    </div>
+    <div class="bar"><div class="bar-fill" id="barFill"></div></div>
+    <div id="overMsg">🚨 Uh oh — you're over budget! Try removing something, picking a free museum, or packing a picnic. 🥪</div>
+    <div id="okMsg"></div>
+  </div>
+
+  <!-- FAMILY -->
+  <section class="card">
+    <h2>👨‍👩‍👧‍👦 1. Who's coming?</h2>
+    <p class="hint">Tickets and train fares are worked out for every person automatically.</p>
+    <div class="fam-grid" id="famGrid"></div>
+  </section>
+
+  <!-- TRAVEL -->
+  <section class="card">
+    <h2>🚂 2. Getting to London <span class="cost-chip" id="travelChip">£0.00</span></h2>
+    <p class="hint">First pick where you're starting from, then choose how you'll travel. The price updates for your whole family automatically.</p>
+
+    <div class="field">
+      <label for="originSel">📍 Starting location</label>
+      <select id="originSel"></select>
+    </div>
+
+    <div class="mode-tabs" id="modeTabs"></div>
+
+    <div class="travel-pane" id="pane-train">
+      <div class="toggles">
+        <label class="toggle" id="tglRailcardWrap"><input type="checkbox" id="tglRailcard"> 🎫 Family &amp; Friends Railcard <span class="who">(⅓ off adults, 60% off kids)</span></label>
+        <label class="toggle"><input type="checkbox" id="tglSeniorRailcard"> 🎫 Senior Railcard <span class="who">(⅓ off 60+ fares)</span></label>
+      </div>
+    </div>
+
+    <div class="travel-pane" id="pane-car">
+      <div class="inline-fields">
+        <div class="field">
+          <label for="parkingSel">🅿️ Parking</label>
+          <select id="parkingSel"></select>
+        </div>
+      </div>
+      <div class="toggles">
+        <label class="toggle"><input type="checkbox" id="tglCongestion" checked> 🏙️ Congestion Charge zone</label>
+        <label class="toggle"><input type="checkbox" id="tglUlez"> 💨 ULEZ charge (older vehicles)</label>
+      </div>
+    </div>
+
+    <div class="travel-pane" id="pane-coach">
+      <p class="hint" style="margin-bottom:0">Budget option! A typical National Express / megabus day return to London Victoria.</p>
+    </div>
+
+    <div class="travel-pane" id="pane-local">
+      <p class="hint" style="margin-bottom:0">Already in London? No getting-there cost — just pick how you'll get around below. 👇</p>
+    </div>
+
+    <h2 style="margin-top:20px">🚇 Getting around London</h2>
+    <div class="toggles">
+      <label class="toggle"><input type="checkbox" id="tglTube"> 🚇 Tube &amp; rail day cap (Zones 1–2)</label>
+      <label class="toggle"><input type="checkbox" id="tglBus"> 🚌 Buses only (day cap)</label>
+      <label class="toggle"><input type="checkbox" id="tglWalk" checked> 🚶 Walking (free!)</label>
+    </div>
+    <p class="hint" style="margin-top:8px">Kids under 11 travel free on TfL with an adult; 11–15s with a Zip card go free on buses and half price on the tube. Tick tube <em>or</em> bus — buses are cheaper but slower.</p>
+
+    <div class="breakdown" id="travelBreakdown"></div>
+  </section>
+
+  <!-- ACTIVITIES -->
+  <section class="card">
+    <h2>🎢 3. Pick your activities <span class="cost-chip" id="actChip">£0.00</span></h2>
+    <p class="hint">Choose from the list and press Add — tickets for everyone are added automatically. Lots are FREE! 🆓</p>
+    <div class="picker">
+      <select id="activitySel"></select>
+      <span class="price-preview" id="activityPreview"></span>
+      <button class="add-btn" id="addActivity">+ Add</button>
+    </div>
+    <div class="chips" id="activityChips"></div>
+  </section>
+
+  <!-- FOOD -->
+  <section class="card">
+    <h2>🍔 4. Food &amp; drinks <span class="cost-chip" id="foodChip">£0.00</span></h2>
+    <p class="hint">Add lunch, dinner and treats. Prices are per person, so feeding the whole family is counted for you.</p>
+    <div class="picker">
+      <select id="foodSel"></select>
+      <span class="price-preview" id="foodPreview"></span>
+      <button class="add-btn pink" id="addFood">+ Add</button>
+    </div>
+    <div class="chips" id="foodChips"></div>
+  </section>
+
+  <!-- EXTRAS -->
+  <section class="card">
+    <h2>🎒 5. Anything else? <span class="cost-chip" id="extraChip">£0.00</span></h2>
+    <p class="hint">The little things families always end up buying…</p>
+    <div class="picker">
+      <select id="extraSel"></select>
+      <span class="price-preview" id="extraPreview"></span>
+      <button class="add-btn teal" id="addExtra">+ Add</button>
+    </div>
+    <div class="chips" id="extraChips"></div>
+  </section>
+
+  <!-- SUMMARY -->
+  <section class="card">
+    <h2>🧾 Your day out</h2>
+    <div class="summary-list" id="summaryList"></div>
+    <div class="grand"><span>Total cost</span><span id="grandTotal">£0.00</span></div>
+  </section>
+
+  <p class="footnote" id="pricesNote"></p>
+</div>
+
+<div class="sticky-bar">
+  <span>💰 Left to spend:</span>
+  <span class="big ok" id="stickyRemaining">£200.00</span>
+  <span id="stickyHint"></span>
+</div>
+
+<script>
+/* =====================================================================
+   PRICING DATABASE  (researched July 2026 from official sources:
+   attraction websites, nationalrail.co.uk, tfl.gov.uk — see footnote)
+   ===================================================================== */
+const DATA = {
+  updated: "July 2026",
+
+  // person categories
+  categories: [
+    { key:"adult",  name:"Adults",     emoji:"🧑",  ages:"16 – 59",        default:2 },
+    { key:"teen",   name:"Older kids", emoji:"🧒",  ages:"11 – 15",        default:0 },
+    { key:"child",  name:"Kids",       emoji:"👧",  ages:"5 – 10",         default:2 },
+    { key:"infant", name:"Little ones",emoji:"👶",  ages:"Under 5",        default:0 },
+    { key:"senior", name:"Grandparents", emoji:"🧓", ages:"60+",           default:0 },
+  ],
+
+  // ONE unified starting-location list. Each place carries everything the
+  // travel modes need: rail (adult Off-Peak Day Return + London terminal),
+  // driving miles (one way), and coach adult day-return (null = no direct coach).
+  // Index 0 is "already in London" so the selector always has a sensible default.
+  locations: [
+    { name:"📍 Central London (I'm already here)", london:true },
+    { name:"Reading",              terminal:"Paddington",       rail:28.30, miles:40, coach:14 },
+    { name:"Oxford",               terminal:"Paddington",       rail:32.00, miles:56, coach:16 },
+    { name:"Cambridge",            terminal:"King's Cross",     rail:27.60, miles:60, coach:15 },
+    { name:"Brighton",             terminal:"Victoria",         rail:37.00, miles:54, coach:14 },
+    { name:"St Albans",            terminal:"St Pancras",       rail:16.00, miles:22, coach:null },
+    { name:"Milton Keynes Central",terminal:"Euston",           rail:29.00, miles:50, coach:13 },
+    { name:"Guildford",            terminal:"Waterloo",         rail:20.00, miles:29, coach:null },
+    { name:"Sevenoaks",            terminal:"Charing Cross",    rail:15.50, miles:26, coach:null },
+    { name:"Woking",               terminal:"Waterloo",         rail:17.00, miles:25, coach:null },
+    { name:"Chelmsford",           terminal:"Liverpool Street", rail:22.50, miles:33, coach:null },
+    { name:"Southend Central",     terminal:"Fenchurch Street", rail:19.00, miles:42, coach:null },
+    { name:"Tunbridge Wells",      terminal:"Charing Cross",    rail:22.50, miles:36, coach:null },
+    { name:"Luton",                terminal:"St Pancras",       rail:18.00, miles:32, coach:11 },
+    { name:"Watford Junction",     terminal:"Euston",           rail:13.20, miles:18, coach:null },
+    { name:"Basingstoke",          terminal:"Waterloo",         rail:27.00, miles:48, coach:null },
+    { name:"Colchester",           terminal:"Liverpool Street", rail:29.00, miles:57, coach:null },
+    { name:"Bedford",              terminal:"St Pancras",       rail:26.00, miles:50, coach:null },
+    { name:"Stevenage",            terminal:"King's Cross",     rail:17.00, miles:31, coach:null },
+    { name:"Maidstone East",       terminal:"Victoria",         rail:21.50, miles:37, coach:null },
+    { name:"Winchester",           terminal:"Waterloo",         rail:35.00, miles:64, coach:null },
+  ],
+  railDiscounts: {
+    childPct: 0.5,             // 5-15 pay half
+    familyRailcardAdult: 1/3,  // Family & Friends: 1/3 off adults
+    familyRailcardChild: 0.6,  // and 60% off child fares
+    seniorRailcard: 1/3,
+  },
+  coachChildPct: 0.5,
+
+  // TfL daily caps (contactless, from March 2026; frozen to March 2027)
+  tfl: {
+    tubeCapZ12: 8.90,   // Zones 1-2 daily cap
+    busCap: 5.25,       // bus & tram daily cap
+    teenPct: 0.5,       // 11-15 with Zip pay ~half on the tube
+    // 11-15 with Zip travel FREE on buses; under-11 free everywhere with an adult
+  },
+
+  driving: {
+    pencePerMile: 0.17,     // fuel-only: petrol ~151p/litre at ~40mpg
+    congestion: 18.00,      // rose £15 → £18 on 2 Jan 2026
+    ulez: 12.50,
+    parking: [
+      { name:"Cheaper car park (outer, pre-booked)", cost:25 },
+      { name:"Standard NCP / Q-Park day rate",       cost:40 },
+      { name:"Premium West End car park",            cost:60 },
+    ],
+  },
+
+  // Activities: per-person prices. child covers 5-10, teen 11-15 (same as child
+  // unless attraction charges adult from 16+ anyway). senior = concession.
+  // free:true items cost nothing.
+  activities: [
+    { name:"Tower of London 🏰",                adult:37.00, teen:18.50, child:18.50, senior:29.50, note:"under-5 free" },
+    { name:"London Eye 🎡",                     adult:29.00, teen:26.00, child:26.00, infant:26.00, senior:29.00, note:"under-2 free; ages 2-4 pay child price" },
+    { name:"Madame Tussauds 🌟",                adult:29.00, teen:26.00, child:26.00, infant:26.00, senior:29.00, note:"under-3 free; online advance price" },
+    { name:"SEA LIFE London Aquarium 🐠",       adult:28.00, teen:25.00, child:25.00, infant:25.00, senior:28.00, note:"under-3 free" },
+    { name:"London Zoo 🦁",                     adult:31.80, teen:22.20, child:22.20, infant:22.20, senior:31.80, note:"under-3 free; online advance" },
+    { name:"The View from The Shard 🏙️",       adult:24.95, teen:18.95, child:18.95, senior:24.95, note:"advance price; under-4 free" },
+    { name:"The London Dungeon 🧛",             adult:29.00, teen:23.00, child:23.00, senior:29.00, note:"scary — 12+ recommended, no under-5s" },
+    { name:"Shrek's Adventure 🟢",              adult:22.00, teen:20.00, child:20.00, infant:20.00, senior:22.00, note:"under-2 free" },
+    { name:"HMS Belfast ⚓",                    adult:26.80, teen:13.40, child:13.40, senior:24.10, note:"under-5 free" },
+    { name:"St Paul's Cathedral ⛪",            adult:27.00, teen:10.50, child:10.50, senior:24.00, note:"under-6 free" },
+    { name:"Westminster Abbey 🕍",              adult:31.00, teen:14.00, child:14.00, senior:28.00, note:"under-6 free" },
+    { name:"Kew Gardens 🌸",                    adult:24.00, teen:5.00,  child:5.00,  senior:18.00, note:"under-4 free" },
+    { name:"Cutty Sark ⛵",                     adult:22.00, teen:11.00, child:11.00, senior:22.00, note:"summer offer often cheaper" },
+    { name:"Royal Observatory Greenwich 🔭",    adult:24.00, teen:12.00, child:12.00, senior:24.00, note:"combo ticket with Cutty Sark saves money" },
+    { name:"London Transport Museum 🚌",        adult:24.50, teen:0,     child:0,     senior:23.50, note:"kids under 18 FREE" },
+    { name:"Kensington Palace 👑",              adult:24.70, teen:12.30, child:12.30, senior:19.70 },
+    { name:"Hampton Court Palace 🫅",           adult:29.00, teen:14.00, child:14.00, senior:23.20 },
+    { name:"IFS Cloud Cable Car 🚡",            adult:12.00, teen:6.00,  child:6.00,  senior:12.00, note:"return trip; under-5 free" },
+    { name:"Up at The O2 climb 🧗",             adult:37.00, teen:37.00, child:37.00, senior:37.00, note:"age 8+ and min height 1.2m" },
+    { name:"Warner Bros. Studio Tour 🪄",       adult:58.50, teen:47.00, child:47.00, senior:58.50, note:"Harry Potter! In Watford — book ahead" },
+    { name:"Natural History Museum 🦖 (FREE)",  free:true },
+    { name:"Science Museum 🚀 (FREE)",          free:true },
+    { name:"British Museum 🏺 (FREE)",          free:true },
+    { name:"National Gallery 🖼️ (FREE)",        free:true },
+    { name:"Tate Modern 🎨 (FREE)",             free:true },
+    { name:"V&A Museum 💎 (FREE)",              free:true },
+    { name:"Sky Garden 🌿 (FREE — book ahead)", free:true },
+    { name:"Changing of the Guard 💂 (FREE)",   free:true },
+    { name:"Hyde Park & Diana Playground 🛝 (FREE)", free:true },
+    { name:"South Bank & Borough Market walk 🌉 (FREE)", free:true },
+    { name:"Greenwich Park picnic 🧺 (FREE)",   free:true },
+  ],
+
+  // Food: per-person. kid price applies to teen+child+infant (infants eat too!)
+  food: [
+    { name:"Packed lunch from home 🥪",        adult:2.50,  kid:2.00 },
+    { name:"Supermarket meal deal 🛒",         adult:4.50,  kid:4.00 },
+    { name:"Greggs stop 🥐",                   adult:4.50,  kid:3.50 },
+    { name:"McDonald's 🍟",                    adult:7.50,  kid:4.30 },
+    { name:"Fish & chips 🐟",                  adult:17.00, kid:9.00 },
+    { name:"Nando's 🍗",                       adult:18.00, kid:6.25 },
+    { name:"Pizza Express 🍕",                 adult:18.50, kid:7.50 },
+    { name:"Wagamama 🍜",                      adult:17.00, kid:7.00 },
+    { name:"Pub lunch 🍽️",                    adult:19.00, kid:8.00 },
+    { name:"Borough Market street food 🌮",    adult:13.00, kid:9.00 },
+    { name:"Afternoon tea (budget) 🫖",        adult:25.00, kid:15.00 },
+    { name:"Ice cream stop 🍦",               adult:4.50,  kid:3.50 },
+    { name:"Coffee & babyccino break ☕",      adult:4.00,  kid:1.50 },
+    { name:"Snacks & drinks for the day 🍫",   adult:5.00,  kid:4.00 },
+  ],
+
+  // Extras: per person (kids only where sensible) or per family
+  extras: [
+    { name:"Souvenir shop budget 🧸",     cost:10, per:"kid" },
+    { name:"Attraction photo 📸",         cost:15, per:"family" },
+    { name:"Rain ponchos ☔",             cost:6,  per:"person" },
+    { name:"Sun cream & hats 🧢",         cost:12, per:"family" },
+    { name:"Programme / guidebook 📖",    cost:7,  per:"family" },
+    { name:"Emergency fund 🆘",           cost:20, per:"family" },
+    { name:"Baby supplies 🍼",            cost:8,  per:"family" },
+    { name:"Left-luggage locker 🧳",      cost:15, per:"family" },
+  ],
+};
+
+/* =====================================================================
+   STATE
+   ===================================================================== */
+const state = {
+  budget: 200,
+  family: Object.fromEntries(DATA.categories.map(c => [c.key, c.default])),
+  travelMode: "train",              // train | car | coach | local
+  origin: 1, parking: 1,            // origin = index into DATA.locations (1 = Reading)
+  railcard: false, seniorRailcard: false,
+  congestion: true, ulez: false,
+  tube: false, bus: false,
+  activities: [],                   // indices into DATA.activities
+  food: [],                         // indices into DATA.food
+  extras: [],                       // indices into DATA.extras
+};
+
+const gbp = n => (n<0?"-£":"£") + Math.abs(n).toFixed(2);
+const el = id => document.getElementById(id);
+const famTotal = () => Object.values(state.family).reduce((a,b)=>a+b,0);
+
+/* =====================================================================
+   COST CALCULATIONS
+   ===================================================================== */
+const loc = () => DATA.locations[state.origin];
+
+function railCost(){
+  const L = loc();
+  if(!L || L.london) return {total:0, lines:[], note: L&&L.london ? "You're already in London — no train needed! 🎉" : ""};
+  if(L.rail==null) return {total:0, lines:[], note:`No direct train from ${L.name} in this planner — try Car or Coach.`};
+  const d = DATA.railDiscounts;
+  let adultFare = L.rail, childFare = L.rail * d.childPct, seniorFare = L.rail;
+  if(state.railcard){ adultFare *= (1-d.familyRailcardAdult); childFare *= (1-d.familyRailcardChild); }
+  if(state.seniorRailcard){ seniorFare *= (1-d.seniorRailcard); }
+  const f = state.family;
+  const lines = [];
+  const aCost = f.adult*adultFare, kCost = (f.teen+f.child)*childFare, sCost = f.senior*seniorFare;
+  if(f.adult)  lines.push([`${f.adult} × adult return (${L.name} → ${L.terminal})`, aCost]);
+  if(f.teen+f.child) lines.push([`${f.teen+f.child} × child return (half fare)`, kCost]);
+  if(f.infant) lines.push([`${f.infant} × under-5 — free! 🎉`, 0]);
+  if(f.senior) lines.push([`${f.senior} × 60+ return`, sCost]);
+  return { total:aCost+kCost+sCost, lines };
+}
+
+function carCost(){
+  const L = loc();
+  if(!L || L.london) return {total:0, lines:[], note: L&&L.london ? "You're already in London — no drive needed! 🎉" : ""};
+  const fuel = L.miles * 2 * DATA.driving.pencePerMile;
+  const park = DATA.driving.parking[state.parking].cost;
+  const lines = [[`⛽ Fuel (~${L.miles*2} miles round trip)`, fuel],[`🅿️ ${DATA.driving.parking[state.parking].name}`, park]];
+  let total = fuel + park;
+  if(state.congestion){ total += DATA.driving.congestion; lines.push(["🏙️ Congestion Charge", DATA.driving.congestion]); }
+  if(state.ulez){ total += DATA.driving.ulez; lines.push(["💨 ULEZ charge", DATA.driving.ulez]); }
+  return { total, lines };
+}
+
+function coachCost(){
+  const L = loc();
+  if(!L || L.london) return {total:0, lines:[], note: L&&L.london ? "You're already in London — no coach needed! 🎉" : ""};
+  if(L.coach==null) return {total:0, lines:[], note:`No direct coach from ${L.name} in this planner — try Train or Car.`};
+  const f = state.family;
+  const kidFare = L.coach * DATA.coachChildPct;
+  const payers = f.adult + f.senior, kids = f.teen + f.child;
+  const total = payers*L.coach + kids*kidFare;
+  const lines = [];
+  if(payers) lines.push([`${payers} × adult coach return (${L.name})`, payers*L.coach]);
+  if(kids)   lines.push([`${kids} × child coach return`, kids*kidFare]);
+  if(f.infant) lines.push([`${f.infant} × under-3 — free! 🎉`, 0]);
+  return { total, lines };
+}
+
+function aroundTownCost(){
+  const f = state.family, t = DATA.tfl, lines = [];
+  let total = 0;
+  if(state.tube){
+    const a = (f.adult+f.senior)*t.tubeCapZ12, k = f.teen*t.tubeCapZ12*t.teenPct;
+    total += a+k;
+    lines.push([`🚇 Tube day cap × ${f.adult+f.senior} adults`, a]);
+    if(f.teen) lines.push([`🚇 Tube × ${f.teen} (11–15 half)`, k]);
+    if(f.child+f.infant) lines.push([`🚇 ${f.child+f.infant} under-11s — free! 🎉`, 0]);
+  }
+  if(state.bus){
+    const a = (f.adult+f.senior)*t.busCap;
+    total += a;
+    lines.push([`🚌 Bus day cap × ${f.adult+f.senior} adults`, a]);
+    if(f.teen+f.child+f.infant) lines.push([`🚌 ${f.teen+f.child+f.infant} kids — free on buses! 🎉`, 0]);
+  }
+  return { total, lines };
+}
+
+function travelCost(){
+  let main = {total:0, lines:[], note:""};
+  if(state.travelMode==="train") main = railCost();
+  if(state.travelMode==="car")   main = carCost();
+  if(state.travelMode==="coach") main = coachCost();
+  const around = aroundTownCost();
+  return { total: main.total + around.total, lines:[...main.lines, ...around.lines], note: main.note||"" };
+}
+
+function activityPrice(a){
+  if(a.free) return 0;
+  const f = state.family;
+  return f.adult*a.adult + f.teen*(a.teen??a.adult) + f.child*(a.child??a.adult)
+       + f.infant*(a.infant??0)        // most attractions are free for under-5s
+       + f.senior*(a.senior??a.adult);
+}
+
+function foodPrice(fd){
+  const f = state.family;
+  return (f.adult+f.senior)*fd.adult + (f.teen+f.child+f.infant)*fd.kid;
+}
+
+function extraPrice(x){
+  const f = state.family;
+  if(x.per==="family") return x.cost;
+  if(x.per==="kid")    return x.cost*(f.teen+f.child+f.infant);
+  return x.cost*famTotal();
+}
+
+const sum = arr => arr.reduce((a,b)=>a+b,0);
+function totals(){
+  const travel = travelCost().total;
+  const acts   = sum(state.activities.map(i=>activityPrice(DATA.activities[i])));
+  const food   = sum(state.food.map(i=>foodPrice(DATA.food[i])));
+  const extras = sum(state.extras.map(i=>extraPrice(DATA.extras[i])));
+  return { travel, acts, food, extras, grand: travel+acts+food+extras };
+}
+
+/* =====================================================================
+   RENDERING
+   ===================================================================== */
+function buildFamily(){
+  el("famGrid").innerHTML = DATA.categories.map(c=>`
+    <div class="fam-tile">
+      <div class="emoji">${c.emoji}</div>
+      <div class="name">${c.name}</div>
+      <div class="ages">${c.ages}</div>
+      <div class="stepper">
+        <button data-fam="${c.key}" data-d="-1" aria-label="fewer ${c.name}">−</button>
+        <span class="count" id="cnt-${c.key}">${state.family[c.key]}</span>
+        <button data-fam="${c.key}" data-d="1" aria-label="more ${c.name}">+</button>
+      </div>
+    </div>`).join("");
+}
+
+const MODES = [
+  {key:"train", label:"🚆 Train"},
+  {key:"car",   label:"🚗 Car"},
+  {key:"coach", label:"🚌 Coach"},
+  {key:"local", label:"📍 Already in London"},
+];
+function buildModes(){
+  el("modeTabs").innerHTML = MODES.map(m=>
+    `<button class="mode-tab${state.travelMode===m.key?" active":""}" data-mode="${m.key}">${m.label}</button>`).join("");
+  MODES.forEach(m=> el("pane-"+m.key).classList.toggle("active", state.travelMode===m.key));
+}
+
+function buildSelects(){
+  el("originSel").innerHTML = DATA.locations.map((L,i)=>
+    `<option value="${i}">${L.name}</option>`).join("");
+  el("parkingSel").innerHTML = DATA.driving.parking.map((p,i)=>
+    `<option value="${i}" ${i===state.parking?"selected":""}>${p.name} — £${p.cost.toFixed(2)}</option>`).join("");
+  el("activitySel").innerHTML = DATA.activities.map((a,i)=>
+    `<option value="${i}">${a.name}</option>`).join("");
+  el("foodSel").innerHTML = DATA.food.map((f,i)=>
+    `<option value="${i}">${f.name}</option>`).join("");
+  el("extraSel").innerHTML = DATA.extras.map((x,i)=>
+    `<option value="${i}">${x.name}</option>`).join("");
+}
+
+function chipHTML(label, price, note, removeAttr){
+  const priceTxt = price===0 ? "FREE 🎉" : gbp(price);
+  return `<div class="chip"><span>${label}${note?` <span class="who">${note}</span>`:""}</span>
+    <span class="chip-price${price===0?" free":""}">${priceTxt}</span>
+    <button ${removeAttr} aria-label="remove">✕</button></div>`;
+}
+
+function render(){
+  const t = totals();
+  const remaining = state.budget - t.grand;
+
+  // family counts
+  DATA.categories.forEach(c=> el("cnt-"+c.key).textContent = state.family[c.key]);
+
+  // budget panel
+  el("spentVal").textContent = gbp(t.grand);
+  const rv = el("remainingVal");
+  rv.textContent = gbp(remaining);
+  const pct = state.budget>0 ? Math.min(100, t.grand/state.budget*100) : (t.grand>0?100:0);
+  const level = remaining<0 ? "over" : (state.budget>0 && remaining < state.budget*0.15 ? "warn" : "ok");
+  rv.className = "val "+level;
+  const bar = el("barFill");
+  bar.style.width = pct+"%";
+  bar.className = "bar-fill"+(level==="ok"?"":" "+level);
+  el("overMsg").style.display = level==="over" ? "block" : "none";
+  const okMsg = el("okMsg");
+  if(level!=="over" && t.grand>0 && remaining>=0){
+    okMsg.style.display="block";
+    okMsg.textContent = remaining===0 ? "🎯 Spot on — every penny planned!"
+      : `👍 Looking good! You'd still have ${gbp(remaining)} in your pocket.`;
+  } else okMsg.style.display="none";
+
+  // sticky bar
+  const sr = el("stickyRemaining");
+  sr.textContent = gbp(remaining);
+  sr.className = "big "+level;
+  el("stickyHint").textContent = level==="over" ? "🚨 over budget!" : "";
+
+  // travel
+  el("travelChip").textContent = gbp(t.travel);
+  const tb = travelCost();
+  const noteHTML = tb.note ? `<div style="color:var(--blue)"><span>${tb.note}</span><span></span></div>` : "";
+  el("travelBreakdown").innerHTML = tb.lines.length
+    ? noteHTML + tb.lines.map(([l,c])=>`<div><span>${l}</span><span class="money-sm">${c===0?"FREE":gbp(c)}</span></div>`).join("")
+      + `<div style="border-top:1px dashed #d5dcf0;margin-top:6px;padding-top:6px"><span><strong>Travel total</strong></span><span class="money-sm"><strong>${gbp(tb.total)}</strong></span></div>`
+    : (noteHTML || `<div><span>No travel costs yet — choose an option above.</span><span></span></div>`);
+
+  // pickers previews
+  const aSel = DATA.activities[+el("activitySel").value||0];
+  el("activityPreview").textContent = aSel ? (aSel.free?"FREE for everyone! 🎉":`${gbp(activityPrice(aSel))} for your family`) : "";
+  const fSel = DATA.food[+el("foodSel").value||0];
+  el("foodPreview").textContent = fSel ? `${gbp(foodPrice(fSel))} for your family` : "";
+  const xSel = DATA.extras[+el("extraSel").value||0];
+  el("extraPreview").textContent = xSel ? gbp(extraPrice(xSel)) : "";
+
+  // chips
+  el("actChip").textContent = gbp(t.acts);
+  el("activityChips").innerHTML = state.activities.map((idx,pos)=>{
+    const a = DATA.activities[idx];
+    return chipHTML(a.name, activityPrice(a), a.note, `data-rm-act="${pos}"`);
+  }).join("");
+  el("foodChip").textContent = gbp(t.food);
+  el("foodChips").innerHTML = state.food.map((idx,pos)=>{
+    const f = DATA.food[idx];
+    return chipHTML(f.name, foodPrice(f), `£${f.adult.toFixed(2)} adult / £${f.kid.toFixed(2)} kid`, `data-rm-food="${pos}"`);
+  }).join("");
+  el("extraChip").textContent = gbp(t.extras);
+  el("extraChips").innerHTML = state.extras.map((idx,pos)=>{
+    const x = DATA.extras[idx];
+    return chipHTML(x.name, extraPrice(x), x.per==="family"?"per family":(x.per==="kid"?"per kid":"per person"), `data-rm-extra="${pos}"`);
+  }).join("");
+
+  // summary
+  const catLine = (emoji,label,val)=>`<div class="summary-line"><span class="cat">${emoji} ${label}</span><span>${gbp(val)}</span></div>`;
+  el("summaryList").innerHTML =
+    `<div class="summary-line"><span class="cat">👨‍👩‍👧‍👦 Family</span><span>${famTotal()} ${famTotal()===1?"person":"people"}</span></div>`
+    + catLine("🚆","Travel",t.travel)
+    + catLine("🎢",`Activities (${state.activities.length})`,t.acts)
+    + catLine("🍔",`Food (${state.food.length})`,t.food)
+    + catLine("🎒",`Extras (${state.extras.length})`,t.extras);
+  el("grandTotal").textContent = gbp(t.grand);
+
+  // toggle styling
+  document.querySelectorAll(".toggle").forEach(tg=>{
+    const cb = tg.querySelector("input"); tg.classList.toggle("on", cb.checked);
+  });
+
+  save();
+}
+
+/* =====================================================================
+   EVENTS
+   ===================================================================== */
+function wire(){
+  el("budget").addEventListener("input", e=>{ state.budget = Math.max(0, +e.target.value||0); render(); });
+
+  el("famGrid").addEventListener("click", e=>{
+    const b = e.target.closest("button[data-fam]"); if(!b) return;
+    const k = b.dataset.fam;
+    state.family[k] = Math.max(0, Math.min(12, state.family[k] + +b.dataset.d));
+    render();
+  });
+
+  el("modeTabs").addEventListener("click", e=>{
+    const b = e.target.closest(".mode-tab"); if(!b) return;
+    state.travelMode = b.dataset.mode; buildModes(); render();
+  });
+
+  el("originSel").addEventListener("change", e=>{
+    state.origin = +e.target.value;
+    // keep mode sensible: Central London → "already here"; a real town → default to train
+    if(DATA.locations[state.origin].london) state.travelMode = "local";
+    else if(state.travelMode==="local") state.travelMode = "train";
+    buildModes(); render();
+  });
+  el("parkingSel").addEventListener("change", e=>{ state.parking=+e.target.value; render(); });
+
+  const bindTgl = (id,key)=> el(id).addEventListener("change", e=>{ state[key]=e.target.checked; render(); });
+  bindTgl("tglRailcard","railcard"); bindTgl("tglSeniorRailcard","seniorRailcard");
+  bindTgl("tglCongestion","congestion"); bindTgl("tglUlez","ulez");
+  el("tglTube").addEventListener("change", e=>{ state.tube=e.target.checked; if(state.tube){state.bus=false; el("tglBus").checked=false;} render(); });
+  el("tglBus").addEventListener("change", e=>{ state.bus=e.target.checked; if(state.bus){state.tube=false; el("tglTube").checked=false;} render(); });
+  el("tglWalk").addEventListener("change", render);
+
+  el("activitySel").addEventListener("change", render);
+  el("foodSel").addEventListener("change", render);
+  el("extraSel").addEventListener("change", render);
+
+  el("addActivity").addEventListener("click", ()=>{
+    const i = +el("activitySel").value;
+    if(!state.activities.includes(i)) state.activities.push(i);
+    render();
+  });
+  el("addFood").addEventListener("click", ()=>{ state.food.push(+el("foodSel").value); render(); });
+  el("addExtra").addEventListener("click", ()=>{
+    const i = +el("extraSel").value;
+    if(!state.extras.includes(i)) state.extras.push(i);
+    render();
+  });
+
+  document.body.addEventListener("click", e=>{
+    const ra=e.target.closest("[data-rm-act]"), rf=e.target.closest("[data-rm-food]"), rx=e.target.closest("[data-rm-extra]");
+    if(ra){ state.activities.splice(+ra.dataset.rmAct,1); render(); }
+    if(rf){ state.food.splice(+rf.dataset.rmFood,1); render(); }
+    if(rx){ state.extras.splice(+rx.dataset.rmExtra,1); render(); }
+  });
+}
+
+/* persistence so a family's plan survives a refresh */
+function save(){
+  try{ localStorage.setItem("londonPlanner", JSON.stringify(state)); }catch(e){}
+}
+function load(){
+  try{
+    const s = JSON.parse(localStorage.getItem("londonPlanner"));
+    if(s && typeof s==="object"){
+      Object.assign(state, s);
+      // guard against stale indices after data updates
+      if(!DATA.locations[state.origin]) state.origin = 1;
+      state.activities = (s.activities||[]).filter(i=>DATA.activities[i]);
+      state.food = (s.food||[]).filter(i=>DATA.food[i]);
+      state.extras = (s.extras||[]).filter(i=>DATA.extras[i]);
+    }
+  }catch(e){}
+}
+
+function initFromState(){
+  el("budget").value = state.budget;
+  buildModes();
+  el("originSel").value = state.origin; el("parkingSel").value = state.parking;
+  el("tglRailcard").checked = state.railcard; el("tglSeniorRailcard").checked = state.seniorRailcard;
+  el("tglCongestion").checked = state.congestion; el("tglUlez").checked = state.ulez;
+  el("tglTube").checked = state.tube; el("tglBus").checked = state.bus;
+}
+
+el("pricesNote").textContent =
+  `Prices last checked ${DATA.updated} from official sources (attraction websites, National Rail, TfL). ` +
+  `Real prices change and can vary by date, time and how far ahead you book — always double-check before you travel!`;
+
+load();
+buildFamily();
+buildSelects();
+initFromState();
+wire();
+render();
+</script>
+</body>
+</html>
