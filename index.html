@@ -700,9 +700,23 @@ function render(){
 /* =====================================================================
    EVENTS
    ===================================================================== */
+// A completely blank slate — everything at zero.
+function blankState(){
+  return {
+    budget: 0,
+    family: Object.fromEntries(DATA.categories.map(c => [c.key, 0])),
+    travelMode: "local",              // no getting-there cost
+    origin: 0, parking: 1,            // 0 = Central London
+    railcard: false, seniorRailcard: false,
+    congestion: false, ulez: false,
+    tube: false, bus: false,
+    activities: [], food: [], extras: [],
+  };
+}
+
 function resetAll(){
   if(!confirm("Start over? This clears your budget, family and everything you've picked.")) return;
-  Object.assign(state, defaults());
+  Object.assign(state, blankState());
   try{ localStorage.removeItem("londonPlanner"); }catch(e){}
   el("budget").value = state.budget;
   buildFamily();
