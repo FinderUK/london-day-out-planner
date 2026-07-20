@@ -438,21 +438,9 @@ const DATA = {
 /* =====================================================================
    STATE
    ===================================================================== */
-function defaults(){
-  return {
-    budget: 200,
-    family: Object.fromEntries(DATA.categories.map(c => [c.key, c.default])),
-    travelMode: "train",              // train | car | coach | local
-    origin: 1, parking: 1,            // origin = index into DATA.locations (1 = Reading)
-    railcard: false, seniorRailcard: false,
-    congestion: true, ulez: false,
-    tube: false, bus: false,
-    activities: [],                   // indices into DATA.activities
-    food: [],                         // indices into DATA.food
-    extras: [],                       // indices into DATA.extras
-  };
-}
-const state = defaults();
+// The app opens on a completely blank slate (see blankState() below),
+// and "Start over" returns to the same zeroed state.
+const state = blankState();
 
 const gbp = n => (n<0?"-£":"£") + Math.abs(n).toFixed(2);
 const el = id => document.getElementById(id);
@@ -693,8 +681,6 @@ function render(){
   document.querySelectorAll(".toggle").forEach(tg=>{
     const cb = tg.querySelector("input"); tg.classList.toggle("on", cb.checked);
   });
-
-  save();
 }
 
 /* =====================================================================
@@ -717,7 +703,6 @@ function blankState(){
 function resetAll(){
   if(!confirm("Start over? This clears your budget, family and everything you've picked.")) return;
   Object.assign(state, blankState());
-  try{ localStorage.removeItem("londonPlanner"); }catch(e){}
   el("budget").value = state.budget;
   buildFamily();
   initFromState();
@@ -780,23 +765,8 @@ function wire(){
   });
 }
 
-/* persistence so a family's plan survives a refresh */
-function save(){
-  try{ localStorage.setItem("londonPlanner", JSON.stringify(state)); }catch(e){}
-}
-function load(){
-  try{
-    const s = JSON.parse(localStorage.getItem("londonPlanner"));
-    if(s && typeof s==="object"){
-      Object.assign(state, s);
-      // guard against stale indices after data updates
-      if(!DATA.locations[state.origin]) state.origin = 1;
-      state.activities = (s.activities||[]).filter(i=>DATA.activities[i]);
-      state.food = (s.food||[]).filter(i=>DATA.food[i]);
-      state.extras = (s.extras||[]).filter(i=>DATA.extras[i]);
-    }
-  }catch(e){}
-}
+// Clear any plan saved by older versions, so the app always opens blank.
+try{ localStorage.removeItem("londonPlanner"); }catch(e){}
 
 function initFromState(){
   el("budget").value = state.budget;
@@ -811,7 +781,6 @@ el("pricesNote").textContent =
   `Prices last checked ${DATA.updated} from official sources (attraction websites, National Rail, TfL). ` +
   `Real prices change and can vary by date, time and how far ahead you book — always double-check before you travel!`;
 
-load();
 buildFamily();
 buildSelects();
 initFromState();
