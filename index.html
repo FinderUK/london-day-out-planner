@@ -149,6 +149,14 @@
   .add-btn.purple,.add-btn.pink,.add-btn.teal{background:var(--primary); border-color:var(--primary);}
   .add-btn.purple:hover,.add-btn.pink:hover,.add-btn.teal:hover{background:var(--primary-heavy); border-color:var(--primary-heavy);}
   .price-preview{font-size:.9rem; font-weight:700; color:var(--fg-subtle); min-width:130px;}
+  .learn{color:var(--primary); font-weight:800; text-decoration:none; white-space:nowrap;}
+  .learn:hover{text-decoration:underline;}
+  .chip-link{
+    color:var(--primary); font-weight:800; text-decoration:none; font-size:1.05rem;
+    width:26px; height:26px; display:inline-flex; align-items:center; justify-content:center;
+    border:2px solid var(--primary-subtle); border-radius:8px; flex:none;
+  }
+  .chip-link:hover{background:var(--primary-subtle);}
 
   .chips{display:flex; flex-direction:column; gap:8px; margin-top:16px;}
   .chip{
@@ -434,59 +442,59 @@ const DATA = {
   // unless attraction charges adult from 16+ anyway). senior = concession.
   // free:true items cost nothing.
   activities: [
-    { name:"Tower of London 🏰",                adult:37.00, teen:18.50, child:18.50, senior:29.50, note:"under-5 free" },
-    { name:"London Eye 🎡",                     adult:29.00, teen:26.00, child:26.00, infant:26.00, senior:29.00, note:"under-2 free; ages 2-4 pay child price" },
-    { name:"Madame Tussauds 🌟",                adult:29.00, teen:26.00, child:26.00, infant:26.00, senior:29.00, note:"under-3 free; online advance price" },
-    { name:"SEA LIFE London Aquarium 🐠",       adult:28.00, teen:25.00, child:25.00, infant:25.00, senior:28.00, note:"under-3 free" },
-    { name:"London Zoo 🦁",                     adult:31.80, teen:22.20, child:22.20, infant:22.20, senior:31.80, note:"under-3 free; online advance" },
-    { name:"The View from The Shard 🏙️",       adult:24.95, teen:18.95, child:18.95, senior:24.95, note:"advance price; under-4 free" },
-    { name:"The London Dungeon 🧛",             adult:29.00, teen:23.00, child:23.00, senior:29.00, note:"scary — 12+ recommended, no under-5s" },
-    { name:"Shrek's Adventure 🟢",              adult:22.00, teen:20.00, child:20.00, infant:20.00, senior:22.00, note:"under-2 free" },
-    { name:"HMS Belfast ⚓",                    adult:26.80, teen:13.40, child:13.40, senior:24.10, note:"under-5 free" },
-    { name:"St Paul's Cathedral ⛪",            adult:27.00, teen:10.50, child:10.50, senior:24.00, note:"under-6 free" },
-    { name:"Westminster Abbey 🕍",              adult:31.00, teen:14.00, child:14.00, senior:28.00, note:"under-6 free" },
-    { name:"Kew Gardens 🌸",                    adult:24.00, teen:5.00,  child:5.00,  senior:18.00, note:"under-4 free" },
-    { name:"Cutty Sark ⛵",                     adult:22.00, teen:11.00, child:11.00, senior:22.00, note:"summer offer often cheaper" },
-    { name:"Royal Observatory Greenwich 🔭",    adult:24.00, teen:12.00, child:12.00, senior:24.00, note:"combo ticket with Cutty Sark saves money" },
-    { name:"London Transport Museum 🚌",        adult:24.50, teen:0,     child:0,     senior:23.50, note:"kids under 18 FREE" },
-    { name:"Kensington Palace 👑",              adult:24.70, teen:12.30, child:12.30, senior:19.70 },
-    { name:"Hampton Court Palace 🫅",           adult:29.00, teen:14.00, child:14.00, senior:23.20 },
-    { name:"IFS Cloud Cable Car 🚡",            adult:12.00, teen:6.00,  child:6.00,  senior:12.00, note:"return trip; under-5 free" },
-    { name:"Up at The O2 climb 🧗",             adult:37.00, teen:37.00, child:37.00, senior:37.00, note:"age 8+ and min height 1.2m" },
-    { name:"Warner Bros. Studio Tour 🪄",       adult:58.50, teen:47.00, child:47.00, senior:58.50, note:"Harry Potter! In Watford — book ahead" },
-    { name:"Churchill War Rooms 🎖️",           adult:33.00, teen:16.50, child:16.50, senior:29.70, note:"under-5 free; pre-book" },
-    { name:"Tower Bridge Experience 🌉",        adult:13.40, teen:6.70,  child:6.70,  senior:10.30, note:"glass floor walkway; under-5 free" },
-    { name:"The Monument climb 🏛️",            adult:6.00,  teen:3.00,  child:3.00,  senior:4.60,  note:"311 steps to the top" },
-    { name:"Buckingham Palace State Rooms 👑",  adult:35.00, teen:20.00, child:20.00, senior:32.00, note:"summer opening only; under-5 free" },
-    { name:"The Postal Museum & Mail Rail 📮",  adult:17.05, teen:10.35, child:10.35, senior:15.40, note:"ride the underground Mail Rail" },
-    { name:"Battersea Power Station – Lift 109 🏭", adult:21.50, teen:15.50, child:15.50, senior:21.50, note:"glass lift up the chimney" },
-    { name:"ArcelorMittal Orbit slide 🛝",      adult:17.50, teen:12.50, child:12.50, senior:17.50, note:"world's longest tunnel slide, Olympic Park" },
-    { name:"Frameless immersive art 🎨",        adult:28.00, teen:21.00, child:21.00, senior:28.00, note:"digital art experience; under-5 free" },
-    { name:"Ripley's Believe It or Not! 🙃",    adult:32.00, teen:27.00, child:27.00, senior:32.00, note:"Piccadilly Circus" },
-    { name:"City Cruises Thames river trip 🛥️", adult:22.00, teen:11.00, child:11.00, senior:22.00, note:"hop-on river sightseeing; under-5 free" },
-    { name:"Wembley Stadium tour ⚽",           adult:28.00, teen:20.00, child:20.00, senior:24.00, note:"behind the scenes at Wembley" },
-    { name:"Emirates Stadium tour (Arsenal) 🔴", adult:30.00, teen:20.00, child:20.00, senior:25.00, note:"self-guided; under-5 free" },
-    { name:"Tottenham Hotspur Stadium tour ⚪", adult:35.00, teen:26.00, child:26.00, senior:30.00, note:"Spurs; Dare Skywalk extra" },
-    { name:"Stamford Bridge tour (Chelsea) 🔵", adult:35.00, teen:28.00, child:28.00, senior:30.00, note:"includes museum" },
-    { name:"Twickenham Stadium & rugby tour 🏉", adult:30.00, teen:20.00, child:20.00, senior:24.00, note:"home of England rugby" },
-    { name:"Natural History Museum 🦖 (FREE)",  free:true },
-    { name:"Science Museum 🚀 (FREE)",          free:true },
-    { name:"British Museum 🏺 (FREE)",          free:true },
-    { name:"National Gallery 🖼️ (FREE)",        free:true },
-    { name:"Tate Modern 🎨 (FREE)",             free:true },
-    { name:"V&A Museum 💎 (FREE)",              free:true },
-    { name:"Sky Garden 🌿 (FREE — book ahead)", free:true },
-    { name:"Changing of the Guard 💂 (FREE)",   free:true },
-    { name:"Hyde Park & Diana Playground 🛝 (FREE)", free:true },
-    { name:"South Bank & Borough Market walk 🌉 (FREE)", free:true },
-    { name:"Greenwich Park picnic 🧺 (FREE)",   free:true },
-    { name:"Imperial War Museum 🎖️ (FREE)",     free:true },
-    { name:"National Maritime Museum ⚓ (FREE)", free:true },
-    { name:"Horniman Museum & Gardens 🦩 (FREE)", free:true },
+    { name:"Tower of London 🏰",                adult:37.00, teen:18.50, child:18.50, senior:29.50, note:"under-5 free", url:"https://www.hrp.org.uk/tower-of-london/" },
+    { name:"London Eye 🎡",                     adult:29.00, teen:26.00, child:26.00, infant:26.00, senior:29.00, note:"under-2 free; ages 2-4 pay child price", url:"https://www.londoneye.com/" },
+    { name:"Madame Tussauds 🌟",                adult:29.00, teen:26.00, child:26.00, infant:26.00, senior:29.00, note:"under-3 free; online advance price", url:"https://www.madametussauds.com/london/" },
+    { name:"SEA LIFE London Aquarium 🐠",       adult:28.00, teen:25.00, child:25.00, infant:25.00, senior:28.00, note:"under-3 free", url:"https://www.visitsealife.com/london/" },
+    { name:"London Zoo 🦁",                     adult:31.80, teen:22.20, child:22.20, infant:22.20, senior:31.80, note:"under-3 free; online advance", url:"https://www.londonzoo.org/" },
+    { name:"The View from The Shard 🏙️",       adult:24.95, teen:18.95, child:18.95, senior:24.95, note:"advance price; under-4 free", url:"https://www.theviewfromtheshard.com/" },
+    { name:"The London Dungeon 🧛",             adult:29.00, teen:23.00, child:23.00, senior:29.00, note:"scary — 12+ recommended, no under-5s", url:"https://www.thedungeons.com/london/" },
+    { name:"Shrek's Adventure 🟢",              adult:22.00, teen:20.00, child:20.00, infant:20.00, senior:22.00, note:"under-2 free", url:"https://www.shreksadventure.com/" },
+    { name:"HMS Belfast ⚓",                    adult:26.80, teen:13.40, child:13.40, senior:24.10, note:"under-5 free", url:"https://www.iwm.org.uk/visits/hms-belfast" },
+    { name:"St Paul's Cathedral ⛪",            adult:27.00, teen:10.50, child:10.50, senior:24.00, note:"under-6 free", url:"https://www.stpauls.co.uk/" },
+    { name:"Westminster Abbey 🕍",              adult:31.00, teen:14.00, child:14.00, senior:28.00, note:"under-6 free", url:"https://www.westminster-abbey.org/" },
+    { name:"Kew Gardens 🌸",                    adult:24.00, teen:5.00,  child:5.00,  senior:18.00, note:"under-4 free", url:"https://www.kew.org/" },
+    { name:"Cutty Sark ⛵",                     adult:22.00, teen:11.00, child:11.00, senior:22.00, note:"summer offer often cheaper", url:"https://www.rmg.co.uk/cutty-sark" },
+    { name:"Royal Observatory Greenwich 🔭",    adult:24.00, teen:12.00, child:12.00, senior:24.00, note:"combo ticket with Cutty Sark saves money", url:"https://www.rmg.co.uk/royal-observatory" },
+    { name:"London Transport Museum 🚌",        adult:24.50, teen:0,     child:0,     senior:23.50, note:"kids under 18 FREE", url:"https://www.ltmuseum.co.uk/" },
+    { name:"Kensington Palace 👑",              adult:24.70, teen:12.30, child:12.30, senior:19.70, url:"https://www.hrp.org.uk/kensington-palace/" },
+    { name:"Hampton Court Palace 🫅",           adult:29.00, teen:14.00, child:14.00, senior:23.20, url:"https://www.hrp.org.uk/hampton-court-palace/" },
+    { name:"IFS Cloud Cable Car 🚡",            adult:12.00, teen:6.00,  child:6.00,  senior:12.00, note:"return trip; under-5 free", url:"https://tfl.gov.uk/modes/london-cable-car/" },
+    { name:"Up at The O2 climb 🧗",             adult:37.00, teen:37.00, child:37.00, senior:37.00, note:"age 8+ and min height 1.2m", url:"https://www.theo2.co.uk/up-at-the-o2" },
+    { name:"Warner Bros. Studio Tour 🪄",       adult:58.50, teen:47.00, child:47.00, senior:58.50, note:"Harry Potter! In Watford — book ahead", url:"https://www.wbstudiotour.co.uk/" },
+    { name:"Churchill War Rooms 🎖️",           adult:33.00, teen:16.50, child:16.50, senior:29.70, note:"under-5 free; pre-book", url:"https://www.iwm.org.uk/visits/churchill-war-rooms" },
+    { name:"Tower Bridge Experience 🌉",        adult:13.40, teen:6.70,  child:6.70,  senior:10.30, note:"glass floor walkway; under-5 free", url:"https://www.towerbridge.org.uk/" },
+    { name:"The Monument climb 🏛️",            adult:6.00,  teen:3.00,  child:3.00,  senior:4.60,  note:"311 steps to the top", url:"https://www.themonument.org.uk/" },
+    { name:"Buckingham Palace State Rooms 👑",  adult:35.00, teen:20.00, child:20.00, senior:32.00, note:"summer opening only; under-5 free", url:"https://www.rct.uk/visit/the-state-rooms-buckingham-palace" },
+    { name:"The Postal Museum & Mail Rail 📮",  adult:17.05, teen:10.35, child:10.35, senior:15.40, note:"ride the underground Mail Rail", url:"https://www.postalmuseum.org/" },
+    { name:"Battersea Power Station – Lift 109 🏭", adult:21.50, teen:15.50, child:15.50, senior:21.50, note:"glass lift up the chimney", url:"https://www.lift109.co.uk/" },
+    { name:"ArcelorMittal Orbit slide 🛝",      adult:17.50, teen:12.50, child:12.50, senior:17.50, note:"world's longest tunnel slide, Olympic Park", url:"https://www.arcelormittalorbit.com/" },
+    { name:"Frameless immersive art 🎨",        adult:28.00, teen:21.00, child:21.00, senior:28.00, note:"digital art experience; under-5 free", url:"https://frameless.com/" },
+    { name:"Ripley's Believe It or Not! 🙃",    adult:32.00, teen:27.00, child:27.00, senior:32.00, note:"Piccadilly Circus", url:"https://www.ripleyslondon.com/" },
+    { name:"City Cruises Thames river trip 🛥️", adult:22.00, teen:11.00, child:11.00, senior:22.00, note:"hop-on river sightseeing; under-5 free", url:"https://www.cityexperiences.com/london/city-cruises/" },
+    { name:"Wembley Stadium tour ⚽",           adult:28.00, teen:20.00, child:20.00, senior:24.00, note:"behind the scenes at Wembley", url:"https://www.wembleystadium.com/tours" },
+    { name:"Emirates Stadium tour (Arsenal) 🔴", adult:30.00, teen:20.00, child:20.00, senior:25.00, note:"self-guided; under-5 free", url:"https://www.arsenal.com/tours" },
+    { name:"Tottenham Hotspur Stadium tour ⚪", adult:35.00, teen:26.00, child:26.00, senior:30.00, note:"Spurs; Dare Skywalk extra", url:"https://www.tottenhamhotspur.com/the-stadium/stadium-tours/" },
+    { name:"Stamford Bridge tour (Chelsea) 🔵", adult:35.00, teen:28.00, child:28.00, senior:30.00, note:"includes museum", url:"https://www.chelseafc.com/en/stamford-bridge-tour" },
+    { name:"Twickenham Stadium & rugby tour 🏉", adult:30.00, teen:20.00, child:20.00, senior:24.00, note:"home of England rugby", url:"https://www.englandrugby.com/twickenham/tours-and-museum" },
+    { name:"Natural History Museum 🦖 (FREE)",  free:true, url:"https://www.nhm.ac.uk/" },
+    { name:"Science Museum 🚀 (FREE)",          free:true, url:"https://www.sciencemuseum.org.uk/" },
+    { name:"British Museum 🏺 (FREE)",          free:true, url:"https://www.britishmuseum.org/" },
+    { name:"National Gallery 🖼️ (FREE)",        free:true, url:"https://www.nationalgallery.org.uk/" },
+    { name:"Tate Modern 🎨 (FREE)",             free:true, url:"https://www.tate.org.uk/visit/tate-modern" },
+    { name:"V&A Museum 💎 (FREE)",              free:true, url:"https://www.vam.ac.uk/" },
+    { name:"Sky Garden 🌿 (FREE — book ahead)", free:true, url:"https://skygarden.london/" },
+    { name:"Changing of the Guard 💂 (FREE)",   free:true, url:"https://www.householddivision.org.uk/changing-the-guard" },
+    { name:"Hyde Park & Diana Playground 🛝 (FREE)", free:true, url:"https://www.royalparks.org.uk/parks/hyde-park" },
+    { name:"South Bank & Borough Market walk 🌉 (FREE)", free:true, url:"https://boroughmarket.org.uk/" },
+    { name:"Greenwich Park picnic 🧺 (FREE)",   free:true, url:"https://www.royalparks.org.uk/parks/greenwich-park" },
+    { name:"Imperial War Museum 🎖️ (FREE)",     free:true, url:"https://www.iwm.org.uk/visits/imperial-war-museum-london" },
+    { name:"National Maritime Museum ⚓ (FREE)", free:true, url:"https://www.rmg.co.uk/national-maritime-museum" },
+    { name:"Horniman Museum & Gardens 🦩 (FREE)", free:true, url:"https://www.horniman.ac.uk/" },
     { name:"Museum of London Docklands 🏗️ (FREE)", free:true },
-    { name:"The Design Museum 🛋️ (FREE)",       free:true },
-    { name:"Horizon 22 viewpoint 🌆 (FREE — book ahead)", free:true },
-    { name:"Camden Market browse 🛍️ (FREE)",    free:true },
+    { name:"The Design Museum 🛋️ (FREE)",       free:true, url:"https://designmuseum.org/" },
+    { name:"Horizon 22 viewpoint 🌆 (FREE — book ahead)", free:true, url:"https://horizon22.co.uk/" },
+    { name:"Camden Market browse 🛍️ (FREE)",    free:true, url:"https://www.camdenmarket.com/" },
     { name:"Little Venice & canal walk 🛶 (FREE)", free:true },
   ],
 
@@ -494,18 +502,18 @@ const DATA = {
   food: [
     { name:"Packed lunch from home 🥪",        adult:2.50,  kid:2.00 },
     { name:"Supermarket meal deal 🛒",         adult:4.50,  kid:4.00 },
-    { name:"Greggs stop 🥐",                   adult:4.50,  kid:3.50 },
-    { name:"McDonald's 🍟",                    adult:7.50,  kid:4.30 },
+    { name:"Greggs stop 🥐",                   adult:4.50,  kid:3.50, url:"https://www.greggs.co.uk/" },
+    { name:"McDonald's 🍟",                    adult:7.50,  kid:4.30, url:"https://www.mcdonalds.com/gb/en-gb.html" },
     { name:"Fish & chips 🐟",                  adult:17.00, kid:9.00 },
-    { name:"Nando's 🍗",                       adult:18.00, kid:6.25 },
-    { name:"Pizza Express 🍕",                 adult:18.50, kid:7.50 },
-    { name:"Wagamama 🍜",                      adult:17.00, kid:7.00 },
+    { name:"Nando's 🍗",                       adult:18.00, kid:6.25, url:"https://www.nandos.co.uk/" },
+    { name:"Pizza Express 🍕",                 adult:18.50, kid:7.50, url:"https://www.pizzaexpress.com/" },
+    { name:"Wagamama 🍜",                      adult:17.00, kid:7.00, url:"https://www.wagamama.com/" },
     { name:"Pub lunch 🍽️",                    adult:19.00, kid:8.00 },
-    { name:"Borough Market street food 🌮",    adult:13.00, kid:9.00 },
-    { name:"Seven Dials Market 🍜",            adult:11.00, kid:7.00 },
-    { name:"KERB street food market 🌭",       adult:11.00, kid:7.00 },
-    { name:"Boxpark 📦",                       adult:11.00, kid:7.00 },
-    { name:"Mercato Metropolitano 🇮🇹",        adult:12.00, kid:7.50 },
+    { name:"Borough Market street food 🌮",    adult:13.00, kid:9.00, url:"https://boroughmarket.org.uk/" },
+    { name:"Seven Dials Market 🍜",            adult:11.00, kid:7.00, url:"https://www.sevendialsmarket.com/" },
+    { name:"KERB street food market 🌭",       adult:11.00, kid:7.00, url:"https://www.kerbfood.com/" },
+    { name:"Boxpark 📦",                       adult:11.00, kid:7.00, url:"https://www.boxpark.co.uk/" },
+    { name:"Mercato Metropolitano 🇮🇹",        adult:12.00, kid:7.50, url:"https://www.mercatometropolitano.com/" },
     { name:"Afternoon tea (budget) 🫖",        adult:25.00, kid:15.00 },
     { name:"Ice cream stop 🍦",               adult:4.50,  kid:3.50 },
     { name:"Coffee & babyccino break ☕",      adult:4.00,  kid:1.50 },
@@ -685,9 +693,27 @@ function buildSelects(){
     `<option value="${i}">${x.name}</option>`).join("");
 }
 
-function chipHTML(label, price, note, removeAttr){
+/* Work out a "learn more" web address for an item. Uses its official `url`
+   when we have one; otherwise (for activities) falls back to a Google search
+   of the name so the link always lands somewhere useful. */
+function cleanName(name){
+  return name.replace(/\([^)]*\)/g,"")           // drop "(FREE …)" etc
+             .replace(/[^\x20-\x7E]/g,"")          // drop emoji / non-ASCII
+             .replace(/\s+/g," ").trim();
+}
+function urlFor(item, allowSearch){
+  if(item.url) return item.url;
+  if(allowSearch) return "https://www.google.com/search?q=" + encodeURIComponent(cleanName(item.name)+" London");
+  return null;
+}
+function extLink(url, text, cls){
+  return `<a class="${cls||"learn"}" href="${url}" target="_blank" rel="noopener noreferrer" title="Open website in a new tab">${text}</a>`;
+}
+
+function chipHTML(label, price, note, removeAttr, url){
   const priceTxt = price===0 ? "FREE 🎉" : gbp(price);
-  return `<div class="chip"><span>${label}${note?` <span class="who">${note}</span>`:""}</span>
+  const link = url ? extLink(url, "↗", "chip-link") : "";
+  return `<div class="chip"><span>${label}${note?` <span class="who">${note}</span>`:""}</span>${link}
     <span class="chip-price${price===0?" free":""}">${priceTxt}</span>
     <button ${removeAttr} aria-label="remove">✕</button></div>`;
 }
@@ -732,11 +758,18 @@ function render(){
       + `<div style="border-top:1px dashed #d5dcf0;margin-top:6px;padding-top:6px"><span><strong>Travel total</strong></span><span class="money-sm"><strong>${gbp(tb.total)}</strong></span></div>`
     : (noteHTML || `<div><span>No travel costs yet — choose an option above.</span><span></span></div>`);
 
-  // pickers previews
+  // pickers previews (with a "Learn more ↗" link so kids can explore before adding)
   const aSel = DATA.activities[+el("activitySel").value||0];
-  el("activityPreview").textContent = aSel ? (aSel.free?"FREE for everyone! 🎉":`${gbp(activityPrice(aSel))} for your family`) : "";
+  if(aSel){
+    const priceTxt = aSel.free ? "FREE for everyone! 🎉" : `${gbp(activityPrice(aSel))} for your family`;
+    const url = urlFor(aSel, true);
+    el("activityPreview").innerHTML = priceTxt + (url ? ` &nbsp;·&nbsp; ${extLink(url,"Learn more ↗")}` : "");
+  } else el("activityPreview").textContent = "";
   const fSel = DATA.food[+el("foodSel").value||0];
-  el("foodPreview").textContent = fSel ? `${gbp(foodPrice(fSel))} for your family` : "";
+  if(fSel){
+    const url = urlFor(fSel, false);
+    el("foodPreview").innerHTML = `${gbp(foodPrice(fSel))} for your family` + (url ? ` &nbsp;·&nbsp; ${extLink(url,"Learn more ↗")}` : "");
+  } else el("foodPreview").textContent = "";
   const xSel = DATA.extras[+el("extraSel").value||0];
   el("extraPreview").textContent = xSel ? gbp(extraPrice(xSel)) : "";
 
@@ -744,12 +777,12 @@ function render(){
   el("actChip").textContent = gbp(t.acts);
   el("activityChips").innerHTML = state.activities.map((idx,pos)=>{
     const a = DATA.activities[idx];
-    return chipHTML(a.name, activityPrice(a), a.note, `data-rm-act="${pos}"`);
+    return chipHTML(a.name, activityPrice(a), a.note, `data-rm-act="${pos}"`, urlFor(a, true));
   }).join("");
   el("foodChip").textContent = gbp(t.food);
   el("foodChips").innerHTML = state.food.map((idx,pos)=>{
     const f = DATA.food[idx];
-    return chipHTML(f.name, foodPrice(f), `£${f.adult.toFixed(2)} adult / £${f.kid.toFixed(2)} kid`, `data-rm-food="${pos}"`);
+    return chipHTML(f.name, foodPrice(f), `£${f.adult.toFixed(2)} adult / £${f.kid.toFixed(2)} kid`, `data-rm-food="${pos}"`, urlFor(f, false));
   }).join("");
   el("extraChip").textContent = gbp(t.extras);
   el("extraChips").innerHTML = state.extras.map((idx,pos)=>{
