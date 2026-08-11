@@ -222,9 +222,9 @@
   }
   .card.gh-callout h2{color:#fff; position:relative; z-index:1;}
   .card.gh-callout p{color:rgba(255,255,255,.9); line-height:1.55; margin:10px 0 18px; max-width:62ch; position:relative; z-index:1;}
-  .card.gh-callout .gh-badge{display:flex; align-items:center; gap:10px; margin-bottom:6px; position:relative; z-index:1;}
-  .card.gh-callout .gh-badge .gh-wordmark{font-size:1.5rem;}
-  .card.gh-callout .gh-badge .tag{margin-left:auto; font-size:.7rem; font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:var(--gh-amber);}
+  .card.gh-callout .gh-badge{display:flex; flex-direction:column; align-items:flex-start; gap:4px; margin-bottom:14px; position:relative; z-index:1;}
+  .card.gh-callout .gh-badge .gh-wordmark{font-size:2.6rem;}
+  .card.gh-callout .gh-badge .tag{font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:var(--gh-amber);}
   .gh-btn{
     display:inline-flex; align-items:center; gap:8px; position:relative; z-index:1;
     font-family:var(--font); font-weight:800; font-style:italic; text-transform:uppercase; font-feature-settings:'lnum','tnum';
@@ -383,8 +383,8 @@
   <!-- GOHENRY SPONSOR CALLOUT -->
   <section class="card gh-callout">
     <div class="gh-badge">
+      <span class="tag">Sponsored by</span>
       <span class="gh-wordmark on-dark"><span class="go">go</span><span class="henry">henry</span></span>
-      <span class="tag">Proud sponsor</span>
     </div>
     <h2>💪 Budgeting is a superpower</h2>
     <p>This planner is brought to you by gohenry — the money app and debit card that helps kids aged 6–18 learn to save, spend smart and earn their own pocket money. Plan today's trip here, then keep building those money skills every day.</p>
