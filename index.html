@@ -151,6 +151,9 @@
   .price-preview{font-size:.9rem; font-weight:700; color:var(--fg-subtle); min-width:130px;}
   .learn{color:var(--primary); font-weight:800; text-decoration:none; white-space:nowrap;}
   .learn:hover{text-decoration:underline;}
+  .learn-row{margin-top:10px; font-size:.9rem;}
+  .learn-row:empty{display:none;}
+  .learn-row .learn{white-space:normal;}
   .chip-link{
     color:var(--primary); font-weight:800; text-decoration:none; font-size:1.05rem;
     width:26px; height:26px; display:inline-flex; align-items:center; justify-content:center;
@@ -295,6 +298,7 @@
       <span class="price-preview" id="activityPreview"></span>
       <button class="add-btn" id="addActivity">+ Add</button>
     </div>
+    <div class="learn-row" id="activityLearn"></div>
     <div class="chips" id="activityChips"></div>
   </section>
 
@@ -307,6 +311,7 @@
       <span class="price-preview" id="foodPreview"></span>
       <button class="add-btn pink" id="addFood">+ Add</button>
     </div>
+    <div class="learn-row" id="foodLearn"></div>
     <div class="chips" id="foodChips"></div>
   </section>
 
@@ -758,18 +763,19 @@ function render(){
       + `<div style="border-top:1px dashed #d5dcf0;margin-top:6px;padding-top:6px"><span><strong>Travel total</strong></span><span class="money-sm"><strong>${gbp(tb.total)}</strong></span></div>`
     : (noteHTML || `<div><span>No travel costs yet — choose an option above.</span><span></span></div>`);
 
-  // pickers previews (with a "Learn more ↗" link so kids can explore before adding)
+  // pickers previews + a "Learn more" row tied to the selected item
   const aSel = DATA.activities[+el("activitySel").value||0];
   if(aSel){
-    const priceTxt = aSel.free ? "FREE for everyone! 🎉" : `${gbp(activityPrice(aSel))} for your family`;
+    el("activityPreview").textContent = aSel.free ? "FREE for everyone! 🎉" : `${gbp(activityPrice(aSel))} for your family`;
     const url = urlFor(aSel, true);
-    el("activityPreview").innerHTML = priceTxt + (url ? ` &nbsp;·&nbsp; ${extLink(url,"Learn more ↗")}` : "");
-  } else el("activityPreview").textContent = "";
+    el("activityLearn").innerHTML = url ? extLink(url, `🔎 Learn more about ${aSel.name} ↗`) : "";
+  } else { el("activityPreview").textContent = ""; el("activityLearn").textContent = ""; }
   const fSel = DATA.food[+el("foodSel").value||0];
   if(fSel){
+    el("foodPreview").textContent = `${gbp(foodPrice(fSel))} for your family`;
     const url = urlFor(fSel, false);
-    el("foodPreview").innerHTML = `${gbp(foodPrice(fSel))} for your family` + (url ? ` &nbsp;·&nbsp; ${extLink(url,"Learn more ↗")}` : "");
-  } else el("foodPreview").textContent = "";
+    el("foodLearn").innerHTML = url ? extLink(url, `🔎 Learn more about ${fSel.name} ↗`) : "";
+  } else { el("foodPreview").textContent = ""; el("foodLearn").textContent = ""; }
   const xSel = DATA.extras[+el("extraSel").value||0];
   el("extraPreview").textContent = xSel ? gbp(extraPrice(xSel)) : "";
 
