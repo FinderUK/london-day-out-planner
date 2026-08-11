@@ -232,18 +232,6 @@
     padding:11px 20px; border-radius:var(--radius-sm); font-size:.9rem; transition:all .15s ease;
   }
   .gh-btn:hover{background:#fff; color:var(--gh-navy); border-color:#fff;}
-  /* playful geometric dots, GoHenry-style */
-  .gh-dots{position:absolute; inset:0; z-index:0; pointer-events:none;
-    background-image:
-      radial-gradient(circle, var(--gh-coral) 22%, transparent 23%),
-      radial-gradient(circle, var(--gh-amber) 22%, transparent 23%),
-      radial-gradient(circle, var(--gh-teal) 22%, transparent 23%),
-      radial-gradient(circle, var(--gh-blue) 22%, transparent 23%);
-    background-size:26px 26px, 26px 26px, 26px 26px, 26px 26px;
-    background-position:0 0, 13px 13px, 40px 6px, 20px 30px;
-    background-repeat:no-repeat;
-    top:auto; left:auto; width:180px; height:120px; right:-10px; bottom:-10px; opacity:.55;
-  }
 
   .sponsor-footer{
     display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap;
@@ -394,7 +382,6 @@
 
   <!-- GOHENRY SPONSOR CALLOUT -->
   <section class="card gh-callout">
-    <div class="gh-dots" aria-hidden="true"></div>
     <div class="gh-badge">
       <span class="gh-wordmark on-dark"><span class="go">go</span><span class="henry">henry</span></span>
       <span class="tag">Proud sponsor</span>
