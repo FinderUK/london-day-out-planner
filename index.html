@@ -221,7 +221,15 @@
     background:var(--gh-navy); border:2px solid var(--gh-navy); color:#fff;
   }
   .card.gh-callout h2{color:#fff; position:relative; z-index:1;}
-  .card.gh-callout p{color:rgba(255,255,255,.9); line-height:1.55; margin:10px 0 18px; max-width:62ch; position:relative; z-index:1;}
+  .card.gh-callout p{color:rgba(255,255,255,.9); line-height:1.55; margin:10px 0 18px; max-width:52ch; position:relative; z-index:1;}
+  .card.gh-callout .gh-inner{display:flex; align-items:center; gap:24px;}
+  .card.gh-callout .gh-copy{flex:1 1 340px; min-width:0;}
+  .card.gh-callout .gh-figure{flex:0 0 auto; width:250px; max-width:40%;}
+  .card.gh-callout .gh-figure img{width:100%; height:auto; display:block;}
+  @media (max-width:640px){
+    .card.gh-callout .gh-inner{flex-direction:column; gap:8px;}
+    .card.gh-callout .gh-figure{width:210px; max-width:75%; align-self:center; margin-top:4px;}
+  }
   .card.gh-callout .gh-badge{display:flex; flex-direction:column; align-items:flex-start; gap:4px; margin-bottom:14px; position:relative; z-index:1;}
   .card.gh-callout .gh-badge .gh-wordmark{font-size:2.6rem;}
   .card.gh-callout .gh-badge .tag{font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:var(--gh-amber);}
@@ -382,13 +390,20 @@
 
   <!-- GOHENRY SPONSOR CALLOUT -->
   <section class="card gh-callout">
-    <div class="gh-badge">
-      <span class="tag">Sponsored by</span>
-      <span class="gh-wordmark on-dark"><span class="go">go</span><span class="henry">henry</span></span>
+    <div class="gh-inner">
+      <div class="gh-copy">
+        <div class="gh-badge">
+          <span class="tag">Sponsored by</span>
+          <span class="gh-wordmark on-dark"><span class="go">go</span><span class="henry">henry</span></span>
+        </div>
+        <h2>💪 Budgeting is a superpower</h2>
+        <p>This planner is brought to you by gohenry — the money app and debit card that helps kids aged 6–18 learn to save, spend smart and earn their own pocket money. Plan today's trip here, then keep building those money skills every day.</p>
+        <a class="gh-btn" href="https://www.gohenry.com/uk/" target="_blank" rel="noopener noreferrer">Discover gohenry ↗</a>
+      </div>
+      <div class="gh-figure">
+        <img src="gohenry-kid.webp" width="900" height="834" loading="lazy" alt="A smiling child holding their personalised gohenry debit card and the gohenry money app">
+      </div>
     </div>
-    <h2>💪 Budgeting is a superpower</h2>
-    <p>This planner is brought to you by gohenry — the money app and debit card that helps kids aged 6–18 learn to save, spend smart and earn their own pocket money. Plan today's trip here, then keep building those money skills every day.</p>
-    <a class="gh-btn" href="https://www.gohenry.com/uk/" target="_blank" rel="noopener noreferrer">Discover gohenry ↗</a>
   </section>
 
   <p class="footnote" id="pricesNote"></p>
