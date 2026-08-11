@@ -21,6 +21,8 @@
     --green:#008774; --green-subtle:#E5F9F0;
     --red:#CF2317;   --red-subtle:#FDE8E8;
     --amber:#D64311; --amber-subtle:#FEECE2;
+    /* GoHenry sponsor brand (secondary — Finder stays primary) */
+    --gh-coral:#FA5D5D; --gh-navy:#201C46; --gh-blue:#2F5BFF; --gh-amber:#FFB03B; --gh-teal:#19C3C3;
     /* Shape */
     --radius:16px; --radius-sm:12px;
     --shadow:4px 4px 0 var(--fg-heavy);
@@ -199,6 +201,46 @@
   #resetBtn:active{transform:scale(.96);}
   .sticky-bar .big.ok{color:#4DCEB9;} .sticky-bar .big.warn{color:var(--yellow);} .sticky-bar .big.over{color:#EBA7A2;}
   .footnote{margin-top:28px; font-size:.78rem; color:var(--fg-subtle); text-align:center; line-height:1.6;}
+
+  /* ===== GoHenry sponsor branding (secondary to Finder) ===== */
+  .gh-wordmark{font-weight:800; letter-spacing:-.03em; line-height:1;}
+  .gh-wordmark .go{color:var(--gh-coral);}
+  .gh-wordmark .henry{color:var(--gh-navy);}
+  .gh-wordmark.on-dark .henry{color:#fff;}
+
+  .sponsor-pill{
+    display:inline-flex; align-items:center; gap:8px; margin:0 auto 16px;
+    background:#fff; border-radius:999px; padding:7px 16px 7px 14px; box-shadow:0 4px 14px rgba(35,35,32,.18);
+  }
+  .sponsor-pill .sponsor-label{font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:var(--gh-navy); opacity:.75;}
+  .sponsor-pill .gh-wordmark{font-size:1.15rem;}
+
+  /* .card.gh-callout keeps specificity above Finder's section.card default */
+  .card.gh-callout{
+    position:relative; overflow:hidden;
+    background:var(--gh-navy); border:2px solid var(--gh-navy); color:#fff;
+  }
+  .card.gh-callout h2{color:#fff; position:relative; z-index:1;}
+  .card.gh-callout p{color:rgba(255,255,255,.9); line-height:1.55; margin:10px 0 18px; max-width:62ch; position:relative; z-index:1;}
+  .card.gh-callout .gh-badge{display:flex; flex-direction:column; align-items:flex-start; gap:4px; margin-bottom:14px; position:relative; z-index:1;}
+  .card.gh-callout .gh-badge .gh-wordmark{font-size:2.6rem;}
+  .card.gh-callout .gh-badge .tag{font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:var(--gh-amber);}
+  .gh-btn{
+    display:inline-flex; align-items:center; gap:8px; position:relative; z-index:1;
+    font-family:var(--font); font-weight:800; font-style:italic; text-transform:uppercase; font-feature-settings:'lnum','tnum';
+    background:var(--gh-coral); color:#fff; text-decoration:none; border:2px solid var(--gh-coral);
+    padding:11px 20px; border-radius:var(--radius-sm); font-size:.9rem; transition:all .15s ease;
+  }
+  .gh-btn:hover{background:#fff; color:var(--gh-navy); border-color:#fff;}
+
+  .sponsor-footer{
+    display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap;
+    margin-top:24px; padding:16px; border-top:2px solid var(--border-subtle);
+  }
+  .sponsor-footer .sponsor-label{font-size:.8rem; font-weight:800; color:var(--fg-subtle);}
+  .sponsor-footer .gh-wordmark{font-size:1.3rem;}
+  .sponsor-footer a{text-decoration:none;}
+
   @media (max-width:560px){
     .budget-stats{width:100%; justify-content:space-between; text-align:left;}
     .sticky-bar{gap:8px; font-size:.9rem;}
@@ -208,6 +250,10 @@
 <body>
 
 <header class="hero">
+  <div class="sponsor-pill">
+    <span class="sponsor-label">Sponsored by</span>
+    <span class="gh-wordmark"><span class="go">go</span><span class="henry">henry</span></span>
+  </div>
   <h1>🎡 London Day Out Planner 🇬🇧</h1>
   <p>Plan your family's perfect day — and see if it fits your budget!</p>
 </header>
@@ -334,7 +380,25 @@
     <div class="grand"><span>Total cost</span><span id="grandTotal">£0.00</span></div>
   </section>
 
+  <!-- GOHENRY SPONSOR CALLOUT -->
+  <section class="card gh-callout">
+    <div class="gh-badge">
+      <span class="tag">Sponsored by</span>
+      <span class="gh-wordmark on-dark"><span class="go">go</span><span class="henry">henry</span></span>
+    </div>
+    <h2>💪 Budgeting is a superpower</h2>
+    <p>This planner is brought to you by gohenry — the money app and debit card that helps kids aged 6–18 learn to save, spend smart and earn their own pocket money. Plan today's trip here, then keep building those money skills every day.</p>
+    <a class="gh-btn" href="https://www.gohenry.com/uk/" target="_blank" rel="noopener noreferrer">Discover gohenry ↗</a>
+  </section>
+
   <p class="footnote" id="pricesNote"></p>
+
+  <div class="sponsor-footer">
+    <span class="sponsor-label">Sponsored by</span>
+    <a href="https://www.gohenry.com/uk/" target="_blank" rel="noopener noreferrer" aria-label="gohenry">
+      <span class="gh-wordmark"><span class="go">go</span><span class="henry">henry</span></span>
+    </a>
+  </div>
 </div>
 
 <div class="sticky-bar">
