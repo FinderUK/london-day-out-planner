@@ -781,17 +781,26 @@ function buildModes(){
   MODES.forEach(m=> el("pane-"+m.key).classList.toggle("active", state.travelMode===m.key));
 }
 
+// Alphabetical sort key: strip emoji/"(FREE)", ignore a leading "The", lowercase.
+function sortKey(name){ return cleanName(name).replace(/^the\s+/i,"").toLowerCase(); }
+// Render <option>s A→Z while keeping value = the item's ORIGINAL index (all the
+// pricing logic addresses items by that index, so the order is purely cosmetic).
+function optionsAlpha(list){
+  return list.map((it,i)=>({it,i}))
+    .sort((a,b)=> sortKey(a.it.name).localeCompare(sortKey(b.it.name)))
+    .map(({it,i})=>`<option value="${i}">${it.name}</option>`).join("");
+}
+
 function buildSelects(){
+  // Locations stay alphabetical with Central London pinned first (data order).
   el("originSel").innerHTML = DATA.locations.map((L,i)=>
     `<option value="${i}">${L.name}</option>`).join("");
+  // Parking stays cheapest → priciest (data order).
   el("parkingSel").innerHTML = DATA.driving.parking.map((p,i)=>
     `<option value="${i}" ${i===state.parking?"selected":""}>${p.name} — £${p.cost.toFixed(2)}</option>`).join("");
-  el("activitySel").innerHTML = DATA.activities.map((a,i)=>
-    `<option value="${i}">${a.name}</option>`).join("");
-  el("foodSel").innerHTML = DATA.food.map((f,i)=>
-    `<option value="${i}">${f.name}</option>`).join("");
-  el("extraSel").innerHTML = DATA.extras.map((x,i)=>
-    `<option value="${i}">${x.name}</option>`).join("");
+  el("activitySel").innerHTML = optionsAlpha(DATA.activities);
+  el("foodSel").innerHTML = optionsAlpha(DATA.food);
+  el("extraSel").innerHTML = optionsAlpha(DATA.extras);
 }
 
 /* Work out a "learn more" web address for an item. Uses its official `url`
