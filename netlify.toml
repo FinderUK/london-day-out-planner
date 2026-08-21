@@ -1,0 +1,11 @@
+# Netlify build config — the site is now a Vite + React app.
+# Netlify runs the build and serves the compiled output from dist/.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# SPA fallback (single page, no routing, but harmless and future-proof)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

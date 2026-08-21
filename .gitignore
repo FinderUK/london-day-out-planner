@@ -8,6 +8,12 @@
 
 # Logs
 *.log
+npm-debug.log*
+
+# Node / Vite build
+node_modules/
+dist/
+.vite/
 
 # Local tooling
 .claude/
